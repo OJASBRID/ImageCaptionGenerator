@@ -17,6 +17,7 @@ from keras._tf_keras.keras.layers import LSTM, Embedding, Dropout
 from tqdm.notebook import tqdm as tqdm 
 
 
+
 def load_doc(filename):
     file = open(filename, 'r')
     text = file.read()
@@ -94,3 +95,30 @@ vocabulary = txt_vocab(clean_descriptions)
 print("Length of vocabulary = ", len(vocabulary))
 #saving all descriptions in one file
 save_descriptions(clean_descriptions, "descriptions.txt")
+
+model = Xception( include_top=False, pooling='avg' )
+
+def extract_features(directory):
+    model = Xception( include_top=False, pooling='avg' )
+    features = dict() 
+
+    for pic in os.listdir(directory):
+        file = directory + "/" + pic
+        image = Image.open(file)
+        image = image.resize((299, 299))
+        image = np.expand_dims(image, axis = 0)
+        image = image / 127.5
+        image = image - 1.0
+        feature = model.predict(image)
+        features[pic] = feature
+    
+    return features
+
+features = extract_features(dataset_images)
+
+len(features)
+dump(features, open("features.p", "wb"))
+
+features  = load(open("features.p", "rb"))
+
+print(features)
