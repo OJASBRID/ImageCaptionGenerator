@@ -14,6 +14,7 @@ from keras._tf_keras.keras.utils import to_categorical
 from keras._tf_keras.keras.models import Model, load_model
 from keras._tf_keras.keras.layers import Input, Dense#Keras to build our CNN and LSTM
 from keras._tf_keras.keras.layers import LSTM, Embedding, Dropout
+from tqdm.notebook import tqdm as tqdm 
 
 
 def load_doc(filename):
@@ -27,11 +28,10 @@ def img_capt(filename):
     descriptions = dict()
     for line in doc.split('\n'):
         # split line by white space
-        tokens = line.split("\t")
+        tokens = line.split(",")
         
         # take the first token as image id, the rest as description
         image_id, image_desc = tokens[0], tokens[1:]
-        
         # extract filename from image id
         image_id = image_id.split('.')[0]
         
@@ -40,6 +40,7 @@ def img_capt(filename):
         if image_id not in descriptions:
             descriptions[image_id] = list()
         descriptions[image_id].append(image_desc)
+        
     
     return descriptions
 
@@ -79,3 +80,17 @@ def save_descriptions(descriptions, filename):
     file = open(filename,"w")
     file.write(data)
     file.close()
+    
+dataset_text = r"D:\Dataset\captions.txt"
+dataset_images = r"D:\Dataset\Images"
+
+filename = dataset_text
+descriptions = img_capt(filename)
+print("Length of descriptions =" ,len(descriptions))
+#cleaning the descriptions
+clean_descriptions = txt_clean(descriptions)
+#to build vocabulary
+vocabulary = txt_vocab(clean_descriptions)
+print("Length of vocabulary = ", len(vocabulary))
+#saving all descriptions in one file
+save_descriptions(clean_descriptions, "descriptions.txt")
