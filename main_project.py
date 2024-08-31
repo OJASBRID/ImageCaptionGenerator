@@ -178,3 +178,15 @@ def dict_to_list(descriptions):
     for key in descriptions.keys():
         [all_desc.append(d) for d in descriptions[key]]
     return all_desc
+
+from keras._tf_keras.keras.preprocessing.text import Tokenizer
+def create_tokenizer(descriptions):
+    desc_list = dict_to_list(descriptions)
+    tokenizer = Tokenizer()
+    tokenizer.fit_on_texts(desc_list)
+    return tokenizer
+
+tokenizer = create_tokenizer(train_descriptions)
+dump(tokenizer, open('tokenizer.p', 'wb'))
+vocab_size = len(tokenizer.word_index) + 1
+vocab_size 
