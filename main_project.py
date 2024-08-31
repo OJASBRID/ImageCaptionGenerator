@@ -138,3 +138,43 @@ doc = load_doc("descriptions.txt")
 print(doc)
 
 print(train_imgs)
+
+def load_clean_descriptions(filename, photos):
+    #loading clean_descriptions
+    doc = load_doc(filename)
+    descriptions = dict()
+
+    for line in doc.split('\n'):
+        words = line.split()
+        if len(words) < 1:
+            continue
+
+        image_id, image_caption = words[0], words[1:]
+
+        image_id_ext = image_id + ".jpg"
+
+        if image_id_ext in photos:
+            if image_id not in descriptions:
+                descriptions[image_id] = list()
+            cap_gem = 'startseq ' + ' '.join(image_caption) + ' endseq' 
+            descriptions[image_id].append(cap_gem)
+
+    return descriptions
+
+
+train_descriptions = load_clean_descriptions("descriptions.txt", train_imgs)
+
+def load_features(photos):
+    #loading all features
+    all_features = load(open("features.p","rb"))
+    #selecting only needed features
+    features = {k:all_features[k] for k in photos}
+    return features
+
+train_features = load_features(train_imgs)
+
+def dict_to_list(descriptions):
+    all_desc = list()
+    for key in descriptions.keys():
+        [all_desc.append(d) for d in descriptions[key]]
+    return all_desc
