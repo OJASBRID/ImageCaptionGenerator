@@ -122,3 +122,19 @@ dump(features, open("features.p", "wb"))
 features  = load(open("features.p", "rb"))
 
 print(features)
+
+def load_photos(filename):
+    file = load_doc(filename)
+    photos = file.split("\n")[:-1]
+    return photos
+
+filename = r"D:\Dataset\image_names.txt"
+# train = loading_data(filename)
+train_imgs = load_photos(filename)
+
+print(len(train_imgs))
+
+doc = load_doc("descriptions.txt")
+print(doc)
+
+print(train_imgs)
