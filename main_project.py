@@ -42,3 +42,22 @@ def img_capt(filename):
         descriptions[image_id].append(image_desc)
     
     return descriptions
+
+def txt_clean(captions):
+    table = str.maketrans('','',string.punctuation)
+    for img, caps in captions.items():
+        for i in range(len(caps)):
+            descp = caps[i]
+            descp = descp.split()
+            #uppercase to lowercase
+            descp = [word.lower() for word in descp]
+            #remove punctuation from each token
+            descp = [word.translate(table) for word in descp]
+            #remove hanging 's and a
+            descp = [word for word in descp if(len(word)>1)]
+            #remove words containing numbers with them
+            descp = [word for word in descp if(word.isalpha())]
+            #converting back to string
+            caps[i] = ' '.join(descp)
+    
+    return captions
